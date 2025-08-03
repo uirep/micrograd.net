@@ -9,6 +9,20 @@ namespace Micrograd.Examples
     {
         static void Main(string[] args)
         {
+            // Check for benchmark-only mode
+            if (args.Length > 0 && args[0].ToLower() == "benchmark")
+            {
+                GpuBenchmark.RunHeavyGpuTest();
+                return;
+            }
+            
+            // Check for quick GPU test mode
+            if (args.Length > 0 && args[0].ToLower() == "gpu")
+            {
+                QuickGpuTest.RunMatrixBenchmark();
+                return;
+            }
+
             Console.WriteLine("=== Micrograd .NET Examples ===");
             Console.WriteLine();
 
@@ -26,6 +40,14 @@ namespace Micrograd.Examples
 
             // Example 4: XOR problem
             XORExample();
+            Console.WriteLine();
+
+            // Example 5: Tensor examples with GPU backend
+            TensorProgram.RunTensorExamples();
+            Console.WriteLine();
+
+            // Example 6: Heavy GPU Performance Benchmark
+            GpuBenchmark.RunHeavyGpuTest();
             Console.WriteLine();
 
             Console.WriteLine("All examples completed!");

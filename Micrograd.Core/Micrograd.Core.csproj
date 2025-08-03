@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ManagedCuda" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="TensorKernels.ptx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Micrograd.Core.Kernels/TensorKernels.cu" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
