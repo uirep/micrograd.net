@@ -6,14 +6,28 @@ because why not port [karpathy's micrograd](https://github.com/karpathy/microgra
 
 tiny neural network lib with automatic differentiation. builds computational graphs, does backprop, trains networks. the usual.
 
+**now with GPU acceleration** 🔥 - because your NVIDIA GPU was getting lonely.
+
 ## usage
 
+basic examples (CPU + GPU):
 ```bash
 dotnet run --project Micrograd.Examples
 ```
 
-watch it learn XOR or whatever. there's also tests if you're into that:
+watch it learn XOR or whatever. also shows your GPU absolutely destroying CPU performance.
 
+quick GPU benchmark (recommended):
+```bash
+dotnet run --project Micrograd.Examples gpu
+```
+
+heavy GPU stress test:
+```bash
+dotnet run --project Micrograd.Examples benchmark
+```
+
+there's also tests if you're into that:
 ```bash
 dotnet test
 ```
@@ -34,6 +48,23 @@ var mlp = new MLP(2, new[] { 4, 1 });
 var prediction = mlp.ForwardSingle(new[] { new Value(1.0), new Value(-1.0) });
 ```
 
+GPU tensor operations:
+```csharp
+var gpu = new GpuBackend(); // your NVIDIA GPU
+var a = gpu.CreateTensor(new Shape(2048, 2048), data);
+var b = gpu.CreateTensor(new Shape(2048, 2048), moreData);
+var result = gpu.MatMul(a, b); // blazing fast on GPU
+```
+
+## performance
+
+recent benchmarks on NVIDIA A10:
+- 512×512 matrix: **425x faster** than CPU
+- 1024×1024 matrix: **1,922x faster** than CPU  
+- 2048×2048 matrix: **2,551x faster** than CPU
+
+your GPU probably isn't bored anymore.
+
 ## why C#
 
 ¯\\_(ツ)_/¯
@@ -42,15 +73,26 @@ someone had to do it. plus operator overloading is actually pretty nice for this
 
 ## structure
 
-- `Micrograd.Core/` - the actual library (like 300 lines)
-- `Micrograd.Tests/` - 37 tests that all pass somehow
+- `Micrograd.Core/` - the actual library (now with GPU backend)
+- `Micrograd.Tests/` - tests that all pass somehow
 - `Micrograd.Examples/` - demos including XOR that gets 100% accuracy
+  - `Program.cs` - main examples (CPU Value-based + GPU Tensor-based)
+  - `TensorProgram.cs` - GPU tensor operations with automatic CPU fallback
+  - `GpuBenchmark.cs` - heavy GPU performance testing
+  - `QuickGpuTest.cs` - quick matrix multiplication benchmarks
+
+## requirements
+
+- .NET 9.0
+- NVIDIA GPU + CUDA drivers (for GPU acceleration)
+- falls back to CPU if no GPU available
 
 ## notes
 
 - it works
-- probably don't use this for anything important
-- pure C#, no dependencies
-- educational purposes and/or mild entertainment
+- GPU acceleration actually works really well
+- probably still don't use this for anything important
+- ManagedCuda dependency for the GPU magic
+- educational purposes and/or mild entertainment and/or showing off your GPU
 
 that's it. 
